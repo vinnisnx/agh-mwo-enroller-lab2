@@ -26,12 +26,20 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getMeetingById(@PathVariable("id") long id) {
-        Meeting meeting = meetingService.getById(id);
+    public ResponseEntity<?> getMeetingById(@PathVariable("id") String input) {
+        Meeting meeting = null;
+        if (input.matches("\\d+")) {
+            long id = Long.parseLong(input);
+            meeting = meetingService.getById(id);
+        } else {
+            meeting = meetingService.getByTitle(input);
+        }
         if (meeting == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(meeting, HttpStatus.OK);
+
+
     }
 
 

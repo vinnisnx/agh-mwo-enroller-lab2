@@ -41,12 +41,12 @@ public class ParticipantService {
         return query.list();
     }
 
-    public Collection<Participant> filterAll(String param) {
-        String hql = "FROM Participant WHERE login LIKE '%" + param + "%'";
-        Query query = connector.getSession().createQuery(hql);
-        return query.list();
-
-    }
+//    public Collection<Participant> filterAll(String param) {
+//        String hql = "FROM Participant WHERE login LIKE '%" + param + "%'";
+//        Query query = connector.getSession().createQuery(hql);
+//        return query.list();
+//
+//    }
 
     public Participant findByLogin(String login) {
         String hql = "FROM Participant WHERE login = :login";

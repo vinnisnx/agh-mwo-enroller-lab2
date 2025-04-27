@@ -26,4 +26,10 @@ public class MeetingService {
 		return session.get(Meeting.class, id);
 	}
 
+	public Meeting getByTitle(String title) {
+		String hql = "FROM Meeting WHERE title = :title";
+		Query query = this.session.createQuery(hql);
+		query.setParameter("title", title);
+		return (Meeting) query.uniqueResult();
+	}
 }
