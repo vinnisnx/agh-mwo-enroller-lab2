@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.company.enroller.model.Participant;
@@ -21,6 +22,9 @@ public class ParticipantRestController {
 
 	@Autowired
 	ParticipantService participantService;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipants(@RequestParam(value = "sortOrder", defaultValue = "") String order, @RequestParam(value = "key", defaultValue = "") String filter){
@@ -40,6 +44,8 @@ public class ParticipantRestController {
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
+		String hashedPassword = passwordEncoder.encode(participant.getPassword());
+		participant.setPassword(hashedPassword);
 		if (participantService.findByLogin(participant.getLogin()) != null) {
 			return new ResponseEntity("Unable to create. A participant with login " + participant.getLogin() + " already exist.", HttpStatus.CONFLICT);
 		}
@@ -63,6 +69,8 @@ public class ParticipantRestController {
 		if (participantService.findByLogin(participant.getLogin()) == null) {
 			return new ResponseEntity("Unable to change. A participant with login " + login + " doesn't exist.", HttpStatus.CONFLICT);
 		}
+		String hashedPassword = passwordEncoder.encode(participant.getPassword());
+		participant.setPassword(hashedPassword);
 		participantService.actualizeParticipant(participant);
 		return new ResponseEntity(participant, HttpStatus.OK);
 	}
